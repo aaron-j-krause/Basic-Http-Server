@@ -8,6 +8,12 @@ var expect = chai.expect;
 
 describe('Basic Http', function() {
   var server = 'localhost:3000';
+  var test = function(err, res, done, string) {
+    expect(err).to.eql(null);
+    expect(res).to.have.status(200);
+    expect(res.text).to.contain(string);
+    done();
+  };
 
   describe('/time', function() {
     it('should return a current date', function(done) {
@@ -15,33 +21,26 @@ describe('Basic Http', function() {
       chai.request(server)
         .get('/time')
         .end(function(err, res) {
-          expect(err).to.eql(null);
-          expect(res).to.have.status(200);
-          expect(res.text).to.contain(day);
+          test(err, res, done, day);
         });
-      done();
     });
+  });
 
+  describe('/greet', function() {
     it('should say hello', function(done) {
       chai.request(server)
         .get('/greet')
         .end(function(err, res) {
-          expect(err).to.eql(null);
-          expect(res).to.have.status(200);
-          expect(res.text).to.contain('HELLO');
+          test(err, res, done, 'HELLO');
         });
-      done();
     });
 
     it('should take the name from the url', function(done) {
       chai.request(server)
         .get('/greet/dave')
         .end(function(err, res) {
-          expect(err).to.eql(null);
-          expect(res).to.have.status(200);
-          expect(res.text).to.contain('dave');
+          test(err, res, done, 'dave');
         });
-      done();
     });
   });
 });
